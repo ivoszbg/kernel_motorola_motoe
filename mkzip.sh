@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cp ./arch/arm/boot/zImage ./clarity-N-condor/boot/zImage-dtb
+cat ./arch/arm/boot/zImage ./arch/arm/boot/msm8610-condor-p2b.dtb > ./clarity-N-condor/boot/zImage-dtb
 
 # get modules into one place
 find -name "*.ko" -exec cp {} ./clarity-N-condor/system/lib/modules \;

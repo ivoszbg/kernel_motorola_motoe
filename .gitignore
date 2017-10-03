@@ -68,6 +68,7 @@ clarity-M-condor/boot/zImage-dtb
 clarity-M-condor/system/lib/modules/*
 clarity-N-condor/boot/zImage-dtb
 clarity-N-condor/system/lib/modules/*
+release/
 
 # stgit generated dirs
 patches-*

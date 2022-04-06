@@ -5,3 +5,7 @@ bootpImage
 uImage
 *.dtb
 zImage-dtb
+twrp
+initramfs
+ramdisk
+boot.img

@@ -12,22 +12,21 @@
 
 /dts-v1/;
 
-/include/ "msm8610-moto-reserve.dtsi"
+///include/ "msm8610-moto-reserve.dtsi"
 /include/ "msm8610-v2.dtsi"
 /include/ "msm8610-moto-common.dtsi"
 
 / {
-	/* HWREV: 0x0101 0x82b0
-	 *        ^^^^^^ ^^^^^^
-	 *        Rev1.1 P2B
-	 */
-	qcom,msm-id = <147 0x41 0x010182b0>;
+	model = "Microsoft Lumia 540";
+	compatible = "microsoft,lukla","qcom,msm8610";
+	qcom,msm-id = <164 0x10001>;
+	qcom,board-id = <0x8 0>;
 };
 
 &i2c_3 {
-	tpa6165xx@40 {
-		ti,tpa6165-jack-detect-config = <0xC0>;
-	};
+	//tpa6165xx@40 {
+	//	ti,tpa6165-jack-detect-config = <0xC0>;
+	//};
 };
 
 &soc {

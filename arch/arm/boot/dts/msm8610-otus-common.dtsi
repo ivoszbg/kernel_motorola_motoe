@@ -416,7 +416,7 @@
 	qcom,bus-speed-mode = "SDR12_1p8v", "SDR25_1p8v", "SDR50_1p8v", "DDR_1p8v";
 };
 
-&pm8110_chg_fac {
-		qcom,factory_detect_gpio = <&msmgpio 75 0x1>; /* GPIOF_DIR_IN | GPIOF_INIT_HIGH */
-		gpio-names = "factory_cable_detect";
-};
+//&pm8110_chg_fac {
+///		qcom,factory_detect_gpio = <&msmgpio 75 0x1>; /* GPIOF_DIR_IN | GPIOF_INIT_HIGH */
+//		gpio-names = "factory_cable_detect";
+//};

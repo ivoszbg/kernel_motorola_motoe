@@ -739,7 +739,7 @@ static int mdp3_dmap_update(struct mdp3_dma *dma, void *buf,
 			rc = wait_for_completion_timeout(&dma->dma_comp,
 				KOFF_TIMEOUT);
 			if (rc <= 0) {
-				WARN(1, "cmd kickoff timed out (%d)\n", rc);
+				//WARN(1, "cmd kickoff timed out (%d)\n", rc);
 				rc = -1;
 			}
 		}

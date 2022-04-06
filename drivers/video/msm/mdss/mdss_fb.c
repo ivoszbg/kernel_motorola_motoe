@@ -1340,11 +1340,64 @@ static struct fb_ops mdss_fb_ops = {
 	.fb_mmap = mdss_fb_fbmem_ion_mmap,
 };
 
+static int mdss_fb_alloc_fbmem_iommu(struct msm_fb_data_type *mfd, int dom)
+{
+	void *virt = NULL;
+	unsigned long phys = 0;
+	size_t size = 0;
+	struct platform_device *pdev = mfd->pdev;
+
+	if (!pdev || !pdev->dev.of_node) {
+		pr_err("Invalid device node\n");
+		return -ENODEV;
+	}
+
+	if (of_property_read_u32(pdev->dev.of_node,
+				 "qcom,memory-reservation-size",
+				 &size) || !size) {
+		mfd->fbi->screen_base = NULL;
+		mfd->fbi->fix.smem_start = 0;
+		mfd->fbi->fix.smem_len = 0;
+		return 0;
+	}
+
+	pr_info("%s frame buffer reserve_size=0x%x\n", __func__, size);
+
+	if (size < PAGE_ALIGN(mfd->fbi->fix.line_length *
+			      mfd->fbi->var.yres_virtual))
+		pr_warn("reserve size is smaller than framebuffer size\n");
+
+	virt = allocate_contiguous_memory(size, MEMTYPE_EBI1, SZ_1M, 0);
+	if (!virt) {
+		pr_err("unable to alloc fbmem size=%u\n", size);
+		return -ENOMEM;
+	}
+
+	phys = memory_pool_node_paddr(virt);
+
+	msm_iommu_map_contig_buffer(phys, dom, 0, size, SZ_4K, 0,
+					    &mfd->iova);
+	pr_info("allocating %u bytes at %p (%lx phys) for fb %d\n",
+		 size, virt, phys, mfd->index);
+
+	mfd->fbi->screen_base = virt;
+	mfd->fbi->fix.smem_start = phys;
+	mfd->fbi->fix.smem_len = size;
+
+	return 0;
+}
+
 static int mdss_fb_alloc_fbmem(struct msm_fb_data_type *mfd)
 {
 
 	if (mfd->mdp.fb_mem_alloc_fnc) {
 		return mfd->mdp.fb_mem_alloc_fnc(mfd);
+	} else if (mfd->mdp.fb_mem_get_iommu_domain) {
+		int dom = mfd->mdp.fb_mem_get_iommu_domain();
+		if (dom >= 0)
+			return mdss_fb_alloc_fbmem_iommu(mfd, dom);
+		else
+			return -ENOMEM;
 	} else {
 		pr_err("no fb memory allocator function defined\n");
 		return -ENOMEM;
@@ -1939,7 +1992,7 @@ static int __mdss_fb_sync_buf_done_callback(struct notifier_block *p,
 		sync_pt_data->flushed = true;
 		break;
 	case MDP_NOTIFY_FRAME_TIMEOUT:
-		pr_err("%s: frame timeout\n", sync_pt_data->fence_name);
+		//pr_err("%s: frame timeout\n", sync_pt_data->fence_name);
 		mdss_fb_signal_timeline(sync_pt_data);
 		break;
 	case MDP_NOTIFY_FRAME_DONE:

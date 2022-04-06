@@ -519,7 +519,7 @@
 		qcom,pmic-arb-channel = <0>;
 	};
 
-	i2c@f9923000 { /* BLSP-1 QUP-1 */
+	i2c_1: i2c@f9923000 { /* BLSP-1 QUP-1 */
 		cell-index = <1>;
 		compatible = "qcom,i2c-qup";
 		#address-cells = <1>;
